@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="keywords" content="wordle solver">
     <title>Wordle Solver</title>
     <style>
     table {
@@ -28,9 +29,9 @@
 
 <body>
     <h1>Wordle Solver</h1>
-    <h2>Recommended First 2 Words Combinations</h2>
+    <h2>Recommended Combinations for the First 2 Words</h2>
     <div>
-        <p>Pick each row as a combination for guessing the first two words and pick only one word from each cell.</p>
+        <p>Pick only one row as a combination for guessing the first two words and pick only one word from each cell.</p>
         <table>
             <tr>
                 <th>1st Word</th>
@@ -85,7 +86,7 @@
     </div>
 
     <div style="padding: 0 0 20px">
-        Pick one word from the following lists. Use the candidate words with unique letters first. Also, try to use the word that you're familiar with.
+        Pick one word from the following lists. Pick the candidate words with unique letters first. Also, try to pick the word that you're familiar with.
     </div>
 
     <div style="padding: 0 0 20px">
@@ -163,7 +164,7 @@
                     let wordRow = "<div>";
                     const maxJ = Math.min(words.length, i + wordRowCnt);
                     for (let j = i; j < maxJ; ++j) {
-                        wordRow += "<span class=\"word\">" + words[j] + "</span>"
+                        wordRow += " <span class=\"word\">" + words[j] + "</span>"
                     }
                     wordRow += "</div>";
                     dom.innerHTML += wordRow;
