@@ -207,7 +207,7 @@
                     errorMsg += "<p>Positioned letter " + (i+1) + " has more than 1 letters</p>";
                     continue;
                 }
-                if (word.indexOf(letter) == -1) {
+                if (word[i] != letter) {
                     return true;
                 }
             }
