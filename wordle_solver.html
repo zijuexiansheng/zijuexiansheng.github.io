@@ -25,6 +25,9 @@
         width: 80px;
         display: inline-block;
     }
+    .upperCase {
+        text-transform: uppercase;
+    }
     </style>
 </head>
 
@@ -56,28 +59,28 @@
     <h2>Search Possible Words</h2>
     <div style="padding: 0 0 20px">
         <div><b>Gray Letters</b>: These letters should not be included in the candidate words</div>
-        <input id="grayLetters" type="text" style="width:300px;">
+        <input id="grayLetters" type="text" style="width:300px;" class="upperCase">
     </div>
 
     <div style="padding: 0 0 20px">
         <div><b>Green Letters</b>: Letters with correct positions</div>
         <div>
-            <input id="greenLetter1" maxlength="1" size="1" placeholder="1st">
-            <input id="greenLetter2" maxlength="1" size="1" placeholder="2nd">
-            <input id="greenLetter3" maxlength="1" size="1" placeholder="3rd">
-            <input id="greenLetter4" maxlength="1" size="1" placeholder="4th">
-            <input id="greenLetter5" maxlength="1" size="1" placeholder="5th">
+            <input id="greenLetter1" maxlength="1" size="1" class="upperCase" placeholder="1st">
+            <input id="greenLetter2" maxlength="1" size="1" class="upperCase" placeholder="2nd">
+            <input id="greenLetter3" maxlength="1" size="1" class="upperCase" placeholder="3rd">
+            <input id="greenLetter4" maxlength="1" size="1" class="upperCase" placeholder="4th">
+            <input id="greenLetter5" maxlength="1" size="1" class="upperCase" placeholder="5th">
         </div>
     </div>
 
     <div style="padding: 0 0 20px">
         <div><b>Orange Letters</b>: These letters are in the target word but should not be in these positions</div>
         <div>
-            <input id="orangeLetter1" maxlength="6" size="6" placeholder="1st">
-            <input id="orangeLetter2" maxlength="6" size="6" placeholder="2nd">
-            <input id="orangeLetter3" maxlength="6" size="6" placeholder="3rd">
-            <input id="orangeLetter4" maxlength="6" size="6" placeholder="4th">
-            <input id="orangeLetter5" maxlength="6" size="6" placeholder="5th">
+            <input id="orangeLetter1" maxlength="6" size="6" class="upperCase" placeholder="1st">
+            <input id="orangeLetter2" maxlength="6" size="6" class="upperCase" placeholder="2nd">
+            <input id="orangeLetter3" maxlength="6" size="6" class="upperCase" placeholder="3rd">
+            <input id="orangeLetter4" maxlength="6" size="6" class="upperCase" placeholder="4th">
+            <input id="orangeLetter5" maxlength="6" size="6" class="upperCase" placeholder="5th">
         </div>
     </div>
 
@@ -107,7 +110,7 @@
 
     <div style="padding: 0 0 20px">
         <div><b>Max-Matching Letters</b>: Match as many letters in this list as possible</div>
-        <input id="max-matching-letters" type="text" style="width:300px;">
+        <input id="max-matching-letters" type="text" class="upperCase" style="width:300px;">
     </div>
 
     <div style="padding: 0 0 20px">
