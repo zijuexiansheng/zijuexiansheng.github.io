@@ -41,7 +41,7 @@ function GuessBoard(domId, resolveBtnDomId, wordLen, maxRow) {
     this.handleChangeColor = () => {
         let that = this;
         for (let i = 0; i < this.cellList.length; ++i) {
-            this.cellList[ i ].addEventListener("click", () => {
+            this.cellList[ i ].addEventListener("click", (e) => {
                 if (!that.isEmptyCell(i)) {
                     that.setCellColor({loc: i});
                 }

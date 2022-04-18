@@ -47,6 +47,12 @@
         grid-template-columns: repeat(5, 1fr);
         margin: 5px;
         caret-color: transparent;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
     }
     .row:focus {
         outline: none;
@@ -210,35 +216,35 @@
 
     <h2>Current Guesses</h2>
     <div id="guessBoard" style="width: 350px; min-height: 450px; outline: none; padding-top: 30px;" tabindex="0">
-        <div class="row" contenteditable="true">
+        <div class="row" contenteditable="true" ondragenter="return false;" ondragleave="return false;" ondragover="return false;" ondrop="return false;">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row" contenteditable="true">
+        <div class="row" contenteditable="true" ondragenter="return false;" ondragleave="return false;" ondragover="return false;" ondrop="return false;">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row" contenteditable="true">
+        <div class="row" contenteditable="true" ondragenter="return false;" ondragleave="return false;" ondragover="return false;" ondrop="return false;">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row" contenteditable="true">
+        <div class="row" contenteditable="true" ondragenter="return false;" ondragleave="return false;" ondragover="return false;" ondrop="return false;">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row" contenteditable="true">
+        <div class="row" contenteditable="true" ondragenter="return false;" ondragleave="return false;" ondragover="return false;" ondrop="return false;">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
@@ -323,6 +329,7 @@
     <script src="./js/candidateWords.js"></script>
     <script src="./js/guessBoard.js"></script>
     <script>
+        
         const UNIQUE_LETTERS = "uniqueLetters";
         const DUPLICATED_LETTERS = "duplicatedLetters";
         //const ALL_WORDS = [...dictionary[UNIQUE_LETTERS], ...dictionary[DUPLICATED_LETTERS]];
