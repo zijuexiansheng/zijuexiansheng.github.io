@@ -45,6 +45,7 @@ function GuessBoard(domId, resolveBtnDomId, wordLen, maxRow) {
                 if (!that.isEmptyCell(i)) {
                     that.setCellColor({loc: i});
                 }
+                return false;
             });
         }
     };
@@ -83,6 +84,7 @@ function GuessBoard(domId, resolveBtnDomId, wordLen, maxRow) {
             }
             event.stopPropagation();
             event.preventDefault();
+            return false;
         });
     };
 

@@ -78,6 +78,10 @@
         -moz-user-select: none; /* Old versions of Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+        cursor: default;
+    }
+    .cell::selection {
+        background-color: transparent;
     }
     @-webkit-keyframes cellFocusedBlink {
         from, to {
@@ -101,12 +105,15 @@
     }
     .greenCell {
         background-color: #6aaa64;
+        cursor: pointer;
     }
     .grayCell {
         background-color: #787c7e;
+        cursor: pointer;
     }
     .orangeCell {
         background-color: #c9b457;
+        cursor: pointer;
     }
     #btnResolveGuessBoard {
         font-size: 20px;
