@@ -24,6 +24,10 @@ function GuessBoard(domId, resolveBtnDomId, wordLen, maxRow) {
         this.guessBoard = document.getElementById(this.domId);
         this.cellList = this.guessBoard.getElementsByClassName("cell");
 
+        for (let i = 0; i < this.cellList.length; ++i) {
+            this.cellList[i].setAttribute("contenteditible", "true");
+        }
+
         this.guessBoard.focus();
         this.setFocus(0);
 
@@ -36,6 +40,7 @@ function GuessBoard(domId, resolveBtnDomId, wordLen, maxRow) {
         this.cellList[ this.curLoc ].classList.remove(cellFocusedClassName);
         this.curLoc = loc;
         this.cellList[ loc ].classList.add(cellFocusedClassName);
+        this.cellList[ loc ].focus();
     };
 
     this.handleChangeColor = () => {
