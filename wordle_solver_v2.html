@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="keywords" content="wordle solver, zijuexiansheng, wordle, solver">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Wordle Solver</title>
+    <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      min-width: 300px;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+
+    .word {
+        width: 80px;
+        display: inline-block;
+    }
+    .upperCase {
+        text-transform: uppercase;
+    }
+    #guessBoard {
+        padding: 5px;
+        background-color: #f9f5f5;
+    }
+    .errorMsg {
+        color: red;
+        
+    }
+    @media only screen and (max-width: 600px) {
+        #guessBoard {
+            margin: auto;
+        }
+    }
+    .row {
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: repeat(5, 1fr);
+        margin: 5px;
+    }
+    .cell {
+        background-color: white;
+        color: white;
+        font-size: 32px;
+        font-weight: bold;
+        line-height: 32px;
+        width: 100%;
+        height: 62px;
+        box-sizing: border-box;
+        display: inline-flex;
+        text-transform: uppercase;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+        border: 3px solid #d3d6da;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+    }
+    @-webkit-keyframes cellFocusedBlink {
+        from, to {
+            border-color: #878a8c;
+        }
+        50% {
+            border-color: #d3d6da;
+        }
+    }
+    @keyframes cellFocusedBlink {
+        from, to {
+            border-color: #878a8c;
+        }
+        50% {
+            border-color: #d3d6da;
+        }
+    }
+    .cellFocused {
+        -webkit-animation: cellFocusedBlink 1.5s step-end infinite;
+        animation: cellFocusedBlink 1.5s step-end infinite;
+    }
+    .greenCell {
+        background-color: #6aaa64;
+    }
+    .grayCell {
+        background-color: #787c7e;
+    }
+    .orangeCell {
+        background-color: #c9b457;
+    }
+    #btnResolveGuessBoard {
+        font-size: 20px;
+        background-color: #32b0d9;
+        color: white;
+        padding: 10px 32px;
+        cursor: pointer;
+        border: 2px solid #32b0d9;
+        transition-duration: 0.2s;
+        margin: 20px auto 10px auto;
+        display: block;
+        border-radius: 5px;
+    }
+    #btnResolveGuessBoard:hover {
+        background-color: #008CBA;
+    }
+    .btnMore {
+        font-size: 16px;
+        background-color: #32b0d9;
+        color: white;
+        padding: 4px 6px;
+        cursor: pointer;
+        border: 2px solid #32b0d9;
+        transition-duration: 0.2s;
+        margin: 5px 0;
+        display: block;
+        border-radius: 5px;
+    }
+    .btnMore:hover {
+        background-color: #008CBA;
+    }
+
+    .wordsRecom {
+        font-size: 20px;
+        display: flex;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        grid-gap: 0;
+        border-bottom: 2px solid #32b0d9;
+        z-index: 1;
+    }
+    .wordsRecomTitle {
+        display: inline-flex;
+        padding: 5px;
+        border: 2px solid;
+        border-image-source: linear-gradient(to top, #32b0d9 1px, #beefff 1px);
+        border-image-slice: 1;
+        margin-right: -2px;
+        margin-bottom: -2px;
+        transition-duration: 0.2s;
+        cursor: pointer;
+        z-index: 0;
+    }
+    .wordsRecomTitle:hover {
+        background: #beefff;
+    }
+    .wordsRecomTitle.active {
+        border-image-source: linear-gradient(to top, white 1px, #32b0d9 1px);
+        /*border-top: 2px solid #32b0d9;
+        border-left: 2px solid #32b0d9;
+        border-right: 2px solid #32b0d9;
+        border-bottom: 2px solid white;*/
+        z-index: 999;
+    }
+    .wordsPanel {
+        display: none;
+    }
+    .wordsPanel.active {
+        display: block;
+    }
+    .wordList {
+        max-width: 800px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .wordList span {
+        -ms-flex: 0 0 80px;
+        flex: 0 0 80px;
+    }
+    </style>
+</head>
+
+<body>
+    <h1>Wordle Solver</h1>
+    <h2>Recommended Combinations for the First 2 Words</h2>
+    <div>
+        <p>Pick only one row as a combination for guessing the first two words and pick only one word from each cell.</p>
+        <table>
+            <tr>
+                <th>1st Word</th>
+                <th>2nd Word</th>
+            </tr>
+            <tr>
+                <td>pause, cause</td>
+                <td>irony</td>
+            </tr>
+            <tr>
+                <td>quite</td>
+                <td>annoy</td>
+            </tr>
+            <tr>
+                <td>dairy, diary</td>
+                <td>house</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>Current Guesses</h2>
+    <div id="guessBoard" style="width: 350px; min-height: 450px; outline: none; padding-top: 30px;" tabindex="0">
+        <div class="row">
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+        </div>
+        <div class="row">
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+        </div>
+        <div class="row">
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+        </div>
+        <div class="row">
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+        </div>
+        <div class="row">
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+            <span class="cell"></span>
+        </div>
+        <button id="btnResolveGuessBoard">Provide Suggestions</button>
+        <div id="guessBoardErrorMsg" class="errorMsg"></div>
+    </div>
+
+    <div>
+        <div class="wordsRecom">
+            <div class="wordsRecomTitle active" data-toggle-id="candidateWords">Candidate Words</div>
+            <div class="wordsRecomTitle" data-toggle-id="recommendedWords">Recommended Guess</div>
+        </div>
+        <div id="candidateWords" class="wordsPanel active">
+            <div id="candidateWordsUniqueLetter">
+                <h3>Candidate Words with Unique Letters</h3>
+                <div class="wordList">
+                </div>
+            </div>
+
+            <div id="candidateWordsDupLetter">
+                <h3>Candidate Words with Duplicate Letters</h3>
+                <div class="wordList">
+                </div>
+            </div>
+        </div>
+        <div id="recommendedWords" class="wordsPanel">
+            <div id="recomWordsUniqueLetter">
+                <h3>Recommended Words with Unique Letters</h3>
+                <div class="wordList">
+                </div>
+                <button class="btnMore" data-target="recomWordsUniqueLetter">More</button>
+            </div>
+
+            <div id="recomWordsDupLetter">
+                <h3>Recommended Words with Duplicate Letters</h3>
+                <div class="wordList">
+                </div>
+                <button class="btnMore" data-target="recomWordsDupLetter">More</button>
+            </div>
+
+            <div id="recomWordsAll">
+                <h3>Recommended Words for Overall Cases</h3>
+                <div class="wordList">
+                </div>
+                <button class="btnMore" data-target="recomWordsAll">More</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Max-Letter Matching</h2>
+    <p>If you end up with candidate words such as <b>b</b>ater, <b>c</b>ater, <b>d</b>ater, <b>g</b>ater, <b>h</b>ater, ..., you don't have to guess each of them one by one. Instead, you can try to find a word that covers as many letters in "b c d g h" as possible. For this purpose, you can use this section to find the top 50 possible words</p>
+
+    <div style="padding: 0 0 20px">
+        <div><b>Max-Matching Letters</b>: Match as many letters in this list as possible</div>
+        <input id="max-matching-letters" type="text" class="upperCase" style="width:300px;">
+    </div>
+
+    <div style="padding: 0 0 20px">
+        <button id="btnMaxMatchingSearch">Search Max-Matching</button>
+        <div id="maxMatchingErrorMsg" style="color:red"></div>
+    </div>
+
+    <div style="padding: 0 0 20px">
+        <div><b>Candidate Words with unique letters</b></div>
+        <div id="maxMatchUniqueLetter">
+        </div>
+    </div>
+
+    <div style="padding: 0 0 20px">
+        <div><b>Candidate Words with Duplicate letters</b></div>
+        <div id="maxMatchDuplicateLetter">
+        </div>
+    </div>
+
+
+
+    <script src="./js/wordlist.js"></script>
+    <script src="./js/findBestCandidate.v1.js"></script>
+    <script src="./js/candidateWords.js"></script>
+    <script src="./js/guessBoard.js"></script>
+    <script>
+        const UNIQUE_LETTERS = "uniqueLetters";
+        const DUPLICATED_LETTERS = "duplicatedLetters";
+        //const ALL_WORDS = [...dictionary[UNIQUE_LETTERS], ...dictionary[DUPLICATED_LETTERS]];
+        const ALL_WORDS = dictionary[UNIQUE_LETTERS].concat(dictionary[DUPLICATED_LETTERS]);
+        const guessBoard = new GuessBoard("guessBoard", "btnResolveGuessBoard");
+        guessBoard.init();
+
+        function getWordListByParentId(parentId) {
+            return document.getElementById(parentId).getElementsByClassName("wordList")[0];
+        }
+
+        document.getElementById("btnResolveGuessBoard").addEventListener("click", function() {
+            try {
+                document.getElementById("guessBoardErrorMsg").innerHTML = "";
+
+                const data = guessBoard.fetchData();
+
+                // calculate candidate words
+                const candidateWords = new CandidateWords(data, dictionary[UNIQUE_LETTERS], dictionary[DUPLICATED_LETTERS]);
+                candidateWords.run();
+
+                displayAllWords(getWordListByParentId("candidateWordsUniqueLetter"), () => candidateWords.nextUniqueLetterWords(1000), true); 
+                displayAllWords(getWordListByParentId("candidateWordsDupLetter"), () => candidateWords.nextDupLetterWords(1000), true); 
+
+                // calculate recommendations
+                /*
+                const uniqueRecom = new FindRecommendationWords(dictionary[UNIQUE_LETTERS], candidateWords.uniqueLetterCandidates);
+                uniqueRecom.sortCandidates();
+                displayWords(getWordListByParentId("recomWordsUniqueLetter"), uniqueRecom.nextWords(50).map(w => w[0]), true);
+
+                const dupRecom = new FindRecommendationWords(dictionary[DUPLICATED_LETTERS], candidateWords.dupLetterCandidates);
+                dupRecom.sortCandidates();
+                displayWords(getWordListByParentId("recomWordsDupLetter"), dupRecom.nextWords(50).map(w => w[0]), true);
+                */
+
+                /*
+                const allRecom = new FindRecommendationWords(ALL_WORDS, candidateWords.uniqueLetterCandidates.concat(candidateWords.dupLetterCandidates));
+                allRecom.sortCandidates();
+                displayWords(getWordListByParentId("recomWordsAll"), allRecom.nextWords(100).map(w => w[0]), true);
+                */
+            } catch (e) {
+                document.getElementById("guessBoardErrorMsg").innerHTML = "[ERROR]: " + e.message;
+                throw e;
+            }
+        });
+
+        const wordsRecomTitles = document.getElementsByClassName("wordsRecomTitle");
+        for (let i = 0; i < wordsRecomTitles.length; ++i) {
+            wordsRecomTitles[i].addEventListener("click", function() {
+                const titleDom = wordsRecomTitles[i];
+                if (titleDom.classList.contains("active")) {
+                    return;
+                }
+                for (let j = 0; j < wordsRecomTitles.length; ++j) {
+                    const tmpDom = wordsRecomTitles[j];
+                    if (tmpDom.classList.contains("active")) {
+                        tmpDom.classList.remove("active");
+                        document.getElementById(tmpDom.getAttribute("data-toggle-id")).classList.remove("active");
+                    }
+                }
+                titleDom.classList.add("active");
+                document.getElementById(titleDom.getAttribute("data-toggle-id")).classList.add("active");
+            });
+        }
+
+        function displayWords(dom, words, clear) {
+            if (clear) {
+                dom.innerHTML = "";
+            }
+
+            if (words.length > 0) {
+                dom.innerHTML += "<span>" + words.join("</span><span>") + "</span>";
+            }
+        }
+
+        function displayAllWords(dom, wordsFetcher, clear) {
+            if (clear) {
+                dom.innerHTML = "";
+            }
+
+            let words = wordsFetcher();
+            if (words.length > 0) {
+                console.log(words);
+                displayWords(dom, words, false);
+
+                setTimeout(() => {
+                    displayWords(dom, wordsFetcher, false);
+                }, 1);
+            }
+        }
+
+        /*
+        // search words
+        document.getElementById("btnSearch").addEventListener("click", searchWords);
+        // max-matching words
+        document.getElementById("btnMaxMatchingSearch").addEventListener("click", maxMatchSearch);
+
+        const wordLength = 5;
+        const maxMatchingWords = 50;
+
+        let excludeLetters = "";
+        let positionedLetters = [];
+        let incorrectlyPositionedLetters = [];
+        let results = {}
+        let mustIncludeLetters = "";
+        let errorMsg = "";
+        let maxMatchingErrMsg = "";
+
+        function maxMatchSearch() {
+            maxMatchingErrMsg = "";
+            clearDoms(["maxMatchUniqueLetter", "maxMatchDuplicateLetter", "maxMatchingErrorMsg"]);
+
+            const letters = sanitizeString( document.getElementById("max-matching-letters").value );
+            console.log("max matching letters: " + letters);
+
+            let uniqueLetterMaxMatching = findMaxMatching(UNIQUE_LETTERS, letters);
+            console.log(uniqueLetterMaxMatching);
+
+            let duplicateLetterMaxMatching = findMaxMatching(DUPLICATED_LETTERS, letters);
+            console.log(duplicateLetterMaxMatching);
+            
+            if (maxMatchingErrorMsg.length > 0) {
+                document.getElementById("maxMatchingErrorMsg").innerHTML = "<b>ERROR</b><br/>" + maxMatchingErrorMsg;
+            } else {
+                displayWords(document.getElementById("maxMatchUniqueLetter"), uniqueLetterMaxMatching);
+                displayWords(document.getElementById("maxMatchDuplicateLetter"), duplicateLetterMaxMatching);
+            }
+        }
+
+        function searchWords() {
+            errorMsg = "";
+            console.log("===> search words");
+            init();
+            console.log(`gray letters: [${excludeLetters}]`);
+            console.log(`green letters: [${positionedLetters}]`);
+            console.log(`orange letters: [${incorrectlyPositionedLetters}]`);
+            console.log(`must include letters: [${mustIncludeLetters}]`);
+            results = {
+                [UNIQUE_LETTERS]: [],
+                [DUPLICATED_LETTERS]: []
+            };
+
+            filterWords(UNIQUE_LETTERS);
+            filterWords(DUPLICATED_LETTERS);
+
+            if (errorMsg.length > 0) {
+                errorMsg = "<b>ERROR</b><br/>" + errorMsg;
+            } else {
+                displayWords(document.getElementById("candidateUniqueLetter"), results[UNIQUE_LETTERS]);
+                displayWords(document.getElementById("candidateDuplicateLetter"), results[DUPLICATED_LETTERS]);
+            }
+            document.getElementById("errorMsg").innerHTML = errorMsg;
+        };
+
+        function displayWords(dom, words, i) {
+            const wordRowCnt = 10;
+            const batchWords = 1000;
+            if (i === undefined) {
+                i = 0;
+                dom.innerHTML = "";
+            }
+
+            if (i < words.length) {
+                const maxI = Math.min(words.length, i + batchWords);
+
+                for (; i < maxI;  i+= wordRowCnt) {
+                    let wordRow = "<div>";
+                    const maxJ = Math.min(words.length, i + wordRowCnt);
+                    for (let j = i; j < maxJ; ++j) {
+                        wordRow += " <span class=\"word\">" + words[j] + "</span>"
+                    }
+                    wordRow += "</div>";
+                    dom.innerHTML += wordRow;
+                }
+
+                setTimeout(function() {
+                    displayWords(dom, words, maxI);
+                }, 1);
+            } else {
+                console.log(`display done for dom ${dom.id}`);
+            }
+        }
+
+        function wordContainsExcludedLetters(word) {
+            for(let i = 0; i < excludeLetters.length; ++i) {
+                if (word.indexOf(excludeLetters[i]) != -1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function wordLetterPositionIncorrect(word) {
+            for (let i = 0; i < incorrectlyPositionedLetters.length; ++i) {
+                let letters = incorrectlyPositionedLetters[i];
+                if (letters.indexOf(word[i]) != -1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function positionedLettersNotMatch(word) {
+            for(let i = 0; i < positionedLetters.length; ++i) {
+                let letter = positionedLetters[i];
+                if (letter.length == 0) {
+                    continue;
+                }
+                if (letter.length > 1) {
+                    errorMsg += "<p>Positioned letter " + (i+1) + " has more than 1 letters</p>";
+                    continue;
+                }
+                if (word[i] != letter) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function wordNotContainsIdentifiedLetters(word) {
+            for(let i = 0; i < mustIncludeLetters.length; ++i) {
+                let letter = mustIncludeLetters[i];
+                if (word.indexOf(letter) == -1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function filterWords(key) {
+            let cnt = [0, 0, 0, 0];
+            dictionary[key].forEach(word => {
+                if (wordContainsExcludedLetters(word)) {
+                    ++cnt[0];
+                    return;
+                }
+
+                if (wordLetterPositionIncorrect(word)) {
+                    ++cnt[1];
+                    return;
+                }
+
+                if (positionedLettersNotMatch(word)) {
+                    ++cnt[2];
+                    return;
+                }
+
+                if (wordNotContainsIdentifiedLetters(word)) {
+                    ++cnt[3];
+                    return;
+                }
+
+                results[key].push(word);
+            });
+            console.log(`filtered [${results[key].length}] words for ${key}`);
+            console.log(cnt);
+        }
+
+        function sanitizeString(s) {
+            s = [...new Set(s.trim().toLowerCase().split(""))].join("");
+            s = [...s.matchAll(/[a-z]+/g)].join("");
+            return s;
+        }
+
+        function clearDoms(domIds) {
+            domIds.forEach((domId) => {
+                document.getElementById(domId).innerHTML = "";
+            });
+        }
+
+        function init() {
+            clearDoms(["candidateDuplicateLetter", "candidateDuplicateLetter", "errorMsg"]);
+            // gray letters
+            excludeLetters = sanitizeString( document.getElementById("grayLetters").value );
+
+            // green letters
+            positionedLetters = [];
+            for (let i = 0; i < wordLength; ++i) {
+                positionedLetters.push( sanitizeString(document.getElementById("greenLetter" + (i + 1)).value) );
+            }
+
+            // orange letters
+            incorrectlyPositionedLetters = [];
+            for (let i = 0; i < wordLength; ++i) {
+                incorrectlyPositionedLetters.push( sanitizeString( document.getElementById("orangeLetter" + (i+1)).value ));
+            }
+
+            mustIncludeLetters = [...new Set(incorrectlyPositionedLetters.join("").split(""))].join("");
+        }
+
+        function findMaxMatching(categoryKey, letters) {
+            let candidates = [];
+            for (let i = 0; i <= wordLength; ++i) {
+                candidates.push([]);
+            }
+
+            dictionary[categoryKey].forEach(word => {
+                let ss = new Set();
+                word.split("").forEach(ch => {
+                    if (letters.includes(ch)) {
+                        ss.add(ch);
+                    }
+                });
+
+                if (ss.size > 0) {
+                    candidates[ss.size].push(word);
+                }
+            });
+
+            ans = [];
+            for (let i = wordLength; i > 0; --i) {
+                if (candidates[i].length == 0) {
+                    continue;
+                }
+                if (ans.length + candidates[i].length >= maxMatchingWords) {
+                    ans.push(...candidates[i].slice(0, maxMatchingWords - ans.length));
+                    return ans;
+                } else {
+                    ans.push(...candidates[i]);
+                }
+            }
+            return ans;
+        }
+        */
+        
+    </script>
+</body>
+</html>
