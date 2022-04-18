@@ -47,6 +47,9 @@
         grid-template-columns: repeat(5, 1fr);
         margin: 5px;
     }
+    .row:focus {
+        outline: none;
+    }
     .cell {
         background-color: white;
         color: white;
@@ -68,9 +71,6 @@
         -moz-user-select: none; /* Old versions of Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-    }
-    .cell:focus {
-        outline: none;
     }
     @-webkit-keyframes cellFocusedBlink {
         from, to {
@@ -209,35 +209,35 @@
 
     <h2>Current Guesses</h2>
     <div id="guessBoard" style="width: 350px; min-height: 450px; outline: none; padding-top: 30px;" tabindex="0">
-        <div class="row">
+        <div class="row" contenteditable="true">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row">
+        <div class="row" contenteditable="true">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row">
+        <div class="row" contenteditable="true">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row">
+        <div class="row" contenteditable="true">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
         </div>
-        <div class="row">
+        <div class="row" contenteditable="true">
             <span class="cell"></span>
             <span class="cell"></span>
             <span class="cell"></span>
