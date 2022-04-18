@@ -81,6 +81,8 @@ function GuessBoard(domId, resolveBtnDomId, wordLen, maxRow) {
                 // enter key
                 that.resolveBtn.click();
             }
+            event.stopPropagation();
+            event.preventDefault();
         });
     };
 
